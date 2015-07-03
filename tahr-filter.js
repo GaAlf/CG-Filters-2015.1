@@ -25,23 +25,46 @@ $(function() {
 		});
 	}
 
-	var boxFiltering = function() {
+	var boxFiltering = function(kernel) {
 
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
 
-		for(var l=0; l<height; l++){
-			for(var c=0; c<width; c++){
-				var pixel_data = initial_canvas.getImageData(c,l,1,1);
-				pixel_data.data[1] = 0;
-				//massive processing here.
+		var denominator = 0;
+		for(var k=0; k<kernel.length; k++) denominator += kernel[k];
+
+		for(var l=1; l<height-1; l++){
+			for(var c=1; c<width-1; c++){
+				var pixel_data = result_canvas.getImageData(c,l,1,1);
+				pixel_data.data[3] = 255;
+				var red = 0, green = 0, blue = 0;
+				for(var k=0; k<kernel.length; k++){
+					var x = c, y = l;
+
+					if(k/3 == 0) y++;
+					else if(k/3 == 2) y--;
+
+					if(k%3 == 0) x--;
+					else if(k%3 == 2) x++;
+
+					var pixel_temp = initial_canvas.getImageData(x,y,1,1);
+					red += pixel_temp.data[0]*kernel[k];
+					green += pixel_temp.data[1]*kernel[k];
+					blue += pixel_temp.data[2]*kernel[k];
+					
+					//massive processing here.
+				}
+				pixel_data.data[0] = red / denominator;
+				pixel_data.data[1] = green / denominator;
+				pixel_data.data[2] = blue / denominator;
 				result_canvas.putImageData(pixel_data,c,l);
 			}
 		}
 	}
 
 	$('#blur_filter').on('click',function(e){
-		boxFiltering();
+		smothing = [1,1,1,1,2,1,1,1,1];
+		boxFiltering(smothing);
 	});
 
 });
