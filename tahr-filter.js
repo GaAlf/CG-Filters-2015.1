@@ -67,4 +67,9 @@ $(function() {
 		boxFiltering(smothing);
 	});
 
+	$('#sharpening_filter').on('click',function(e){
+		smothing = [-1,-1,-1,-1,9,-1,-1,-1,-1];
+		boxFiltering(smothing);
+	});
+
 });

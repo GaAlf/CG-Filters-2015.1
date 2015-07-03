@@ -18,11 +18,14 @@
 			<div class="row">
 				<div id="tools_div" class="col-md-2">					
 					<div class="row"><h3>Tools</h3></div>
-					<div class="row"><button id="blur_filter" class="btn btn-primary" style="margin-bottom: 5px; margin-top: 5px;">apply filter blur</button></div>
-					<div class="row"><button class="btn btn-primary" style="margin-bottom: 5px; margin-top: 5px;">apply filter 2</button></div>
-					<div class="row"><button class="btn btn-primary" style="margin-bottom: 5px; margin-top: 5px;">apply filter 3</button></div>
+					<div class="row btn-group">
+						<p><button id="blur_filter" class="btn btn-primary btn-block">apply filter blur</button></p>
+						<p><button id="sharpening_filter" class="btn btn-primary btn-block">apply filter sharpening</button></p>
+						<p><button class="btn btn-primary btn-block">apply filter 3</button></p>
+					</div>
 				</div>
-				<div id="image_div" class="col-md-10">
+				<div class="col-md-1"></div>
+				<div id="image_div" class="col-md-9">
 					<div class="row"><h3>Input image</h3></div>
 					<div class="row">
 						<canvas id="initial_canvas" class="img-rounded" width="800px" height="500px" style="border:1px solid #000000;"></canvas>
