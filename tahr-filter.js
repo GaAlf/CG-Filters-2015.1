@@ -102,12 +102,6 @@ $(function() {
 					red += r * kernel[k];
 					green += g * kernel[k];
 					blue += b * kernel[k];
-
-					if(k == kernel.length-1 && l == height-2 && c == height-2) {
-						console.log("Eu entrei aqui.");
-						console.log( finalImageData.data.length - (4+4*width) );
-						console.log( 4*(c+(l*width)) );
-					}				
 				};
 
 				finalImageData.data[4*(c+(l*width))] = red / denominator;
@@ -137,29 +131,43 @@ $(function() {
 		return matrix;
 	}
 
+	var getCropBox = function(){
+
+		var ret = [0,0,width,height];
+		var temp = parseInt( $('#crop_x').val() );
+		if(temp > ret[0]) ret[0] = temp;
+		temp = parseInt( $('#crop_y').val() );
+		if(temp > ret[1]) ret[1] = temp;
+		temp = parseInt( $('#crop_dx').val() );
+		if(temp < ret[2]) ret[2] = temp;
+		temp = parseInt( $('#crop_dy').val() );
+		if(temp < ret[3]) ret[3] = temp;
+		return ret;
+	}
+
 	$('#blur_filter').on('click',function(e){
-		smothing = [1,1,1,1,2,1,1,1,1];
-		boxFiltering(smothing);
+		smoothing = [1,1,1,1,2,1,1,1,1];
+		boxFiltering(smoothing);
 	});
 
 	$('#sharpening_filter').on('click',function(e){
-		smothing = [-1,-1,-1,-1,9,-1,-1,-1,-1];
-		boxFiltering(smothing);
+		smoothing = [-1,-1,-1,-1,9,-1,-1,-1,-1];
+		boxFiltering(smoothing);
 	});
 
 	$('#raised_filter').on('click',function(e){
-		smothing = [0,0,-2,0,2,0,1,0,0];
-		boxFiltering(smothing);
+		smoothing = [0,0,-2,0,2,0,1,0,0];
+		boxFiltering(smoothing);
 	});
 
 	$('#motion_blur_filter').on('click',function(e){
-		smothing = [0,0,1,0,0,0,1,0,0];
-		boxFiltering(smothing);
+		smoothing = [0,0,1,0,0,0,1,0,0];
+		boxFiltering(smoothing);
 	});
 
 	$('#edge_detection_filter').on('click',function(e){
-		smothing = [-1,-1,-1,-1,8,-1,-1,-1,-1];
-		boxFiltering(smothing);
+		smoothing = [-1,-1,-1,-1,8,-1,-1,-1,-1];
+		boxFiltering(smoothing);
 	});
 
 	$('#color_inversion_filter').on('click',function(e){
@@ -173,5 +181,10 @@ $(function() {
 	$('#dynamic_matrix_btn').on('click',function(e){
 		var dynamic_matrix = getDynamicMatrix();
 		boxFiltering(dynamic_matrix);
+	});
+
+	$('#crop_btn').on('click',function(e){
+		var crop_box = getCropBox();
+		crop(crop_box[0],crop_box[1],crop_box[2],crop_box[3]);
 	});
 });
