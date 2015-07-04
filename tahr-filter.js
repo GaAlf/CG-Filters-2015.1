@@ -72,4 +72,20 @@ $(function() {
 		boxFiltering(smothing);
 	});
 
+	$('#raised_filter').on('click',function(e){
+		smothing = [0,0,-2,0,2,0,1,0,0];
+		boxFiltering(smothing);
+	});
+
+	$('#motion_blur_filter').on('click',function(e){
+		smothing = [0,0,1,0,0,0,1,0,0];
+		boxFiltering(smothing);
+	});
+
+	$('#edge_detection_filter').on('click',function(e){
+		smothing = [-1,-1,-1,-1,8,-1,-1,-1,-1];
+		boxFiltering(smothing);
+	});
+
+
 });
