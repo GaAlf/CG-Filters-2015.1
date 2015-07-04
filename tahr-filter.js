@@ -19,6 +19,7 @@ $(function() {
 		var $img = $('<img>', { src: e.target.result });
 		var canvas = $('#initial_canvas')[0];
 		var context = canvas.getContext('2d');
+		context.clearRect(0,0,width,height);
 
 		$img.load(function() {
 			context.drawImage(this, 0, 0);
@@ -48,6 +49,8 @@ $(function() {
 
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
+		
+		result_canvas.clearRect(0,0,width,height);
 
 		var denominator = 0;
 		for(var k=0; k<kernel.length; k++) denominator += kernel[k];
