@@ -66,6 +66,17 @@ $(function() {
 
 	}
 
+	var crop = function(x,y,dx,dy) {
+
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+
+    	var finalImageData = initial_canvas.getImageData(x,y,dx,dy);
+
+		result_canvas.putImageData(finalImageData,0,0);
+
+	}
+
 
 	var boxFiltering = function(kernel) {
 
