@@ -32,19 +32,52 @@ $(function() {
 		loadImage('#initial_canvas2',e);       
 	});
 
+	var hidden_tools = function(){
+		$("#tools_filters").addClass("hidden");
+		$("#tools_crop").addClass("hidden");
+		$("#tools_addImages").addClass("hidden");
+		$("#tools_subImages").addClass("hidden");
+		$("#tools_resize").addClass("hidden");
+		$("#tools_scale").addClass("hidden");
+	};
+
+	var hidden_secondInput = function(){
+		$("#second_input").addClass("hidden");
+		$("#second_canvas").addClass("hidden");
+	};
+
+	var show_secondInput = function(){
+		$("#second_input").removeClass();
+		$("#second_canvas").removeClass();
+	};
+
 	$("#tools_control").change(function(e){
 		var tool = $("#tools_control").val();
-		if(tool == "operations"){
-			$("#second_input").removeClass();
-			$("#second_canvas").removeClass();
-			$("#tools_operations").removeClass();
-			$("#tools_filters").addClass("hidden");
-		}
-		else if(tool == "filters"){
-			$("#second_input").addClass("hidden");
-			$("#second_canvas").addClass("hidden");
-			$("#tools_filters").removeClass();
-			$("#tools_operations").addClass("hidden");
+		hidden_tools();
+		show_secondInput();
+		hidden_secondInput();
+		
+		switch(tool){
+			case "filters":
+				$("#tools_filters").removeClass();
+				break;
+			case "cropImage":
+				$("#tools_crop").removeClass();
+				break;
+			case "addImages":
+				show_secondInput();
+				$("#tools_addImages").removeClass();
+				break;
+			case "subImages":
+				show_secondInput();
+				$("#tools_subImages").removeClass();
+				break;
+			case "resizeImage":
+				$("#tools_resize").removeClass();
+				break;
+			case "scaleImage":
+				$("#tools_scale").removeClass();
+				break;
 		}
 	});
 
