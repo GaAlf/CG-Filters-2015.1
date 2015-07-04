@@ -63,7 +63,31 @@ $(function() {
 		};
 
 		result_canvas.putImageData(finalImageData,0,0);
+	};
 
+	var sepia = function() {
+
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+
+		for (var i = 0; i < finalImageData.data.length; i+=4) {
+			// Red = (r * .393) + (g *.769) + (b * .189)
+			// Green = (r * .349) + (g *.686) + (b * .168)
+			// Blue = (r * .272) + (g *.534) + (b * .131)
+			var d = 255.0;
+			d = initialImageData.data[i]*0.393 + initialImageData.data[i+1]*0.769 + initialImageData.data[i+2]*0.189;
+			finalImageData.data[i] = Math.min(d,255.0);
+			d = initialImageData.data[i]*0.349 + initialImageData.data[i+1]*0.686 + initialImageData.data[i+2]*0.168;
+			finalImageData.data[i+1] = Math.min(d,255.0);
+			d = initialImageData.data[i]*0.272 + initialImageData.data[i+1]*0.534 + initialImageData.data[i+2]*0.131;
+			finalImageData.data[i+2] = Math.min(d,255.0);
+			finalImageData.data[i+3] = 255;
+		};
+
+		result_canvas.putImageData(finalImageData,0,0);
 	};
 
 	var crop = function(x,y,dx,dy) {
@@ -241,6 +265,10 @@ $(function() {
 
 	$('#black_and_white_filter').on('click',function(e){
 		blackNwhite();
+	});
+
+	$('#sepia_filter').on('click',function(e){
+		sepia();
 	});
 
 	$('#dynamic_matrix_btn').on('click',function(e){
