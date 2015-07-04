@@ -215,7 +215,9 @@ $(function() {
 	};
 
 
-	var boxFiltering = function(kernel) {
+	var boxFiltering = function(kernel,lineSize) {
+
+        if(lineSize%2 == 0 || kernel.length != (lineSize*lineSize)) return;
 
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
@@ -229,20 +231,32 @@ $(function() {
 		var initialImageData = initial_canvas.getImageData(0,0,width,height);
 		var finalImageData = result_canvas.getImageData(0,0,width,height);
 
-		for(var l=1; l<height-1; l++) {
-			for(var c=1; c<width-1; c++) {
-		
+        var halfLineSize = (lineSize/2)|0;
+        var temp1 = 0;
+        var temp2 = 0;
+
+		for(var l=0; l<height; l++) {
+			for(var c=0; c<width; c++) {
+                
 				finalImageData.data[4*(c+(l*width))+3] = 255;
 
 				var red = 0, green = 0, blue = 0;
+                var partialWeight = 0;
 				for (var k=0; k<kernel.length; k++) {
 					var x = c, y = l;
 
-					if(k/3 == 0) y++;
-					else if(k/3 == 2) y--;
+                    temp1 = (k/lineSize)|0; 
+					if(temp1 < halfLineSize) y -= halfLineSize - temp1;
+					else if(temp1 > halfLineSize) y += temp1 - halfLineSize;
 
-					if(k%3 == 0) x--;
-					else if(k%3 == 2) x++;
+                    temp2 = k%lineSize;
+					if(temp2 < halfLineSize) x -= halfLineSize - temp2;
+					else if(temp2 > halfLineSize) x += temp2 - halfLineSize;
+
+                    if(x < 0 || x > width || y < 0 || y > height ){
+                        partialWeight += kernel[k];   
+                        continue;
+                    }
 
 					var r = initialImageData.data[4*(x+(y*width))];
 					var g = initialImageData.data[4*(x+(y*width))+1];
@@ -253,9 +267,9 @@ $(function() {
 					blue += b * kernel[k];
 				};
 
-				finalImageData.data[4*(c+(l*width))] = red / denominator;
-				finalImageData.data[4*(c+(l*width))+1] = green / denominator;
-				finalImageData.data[4*(c+(l*width))+2] = blue / denominator;
+				finalImageData.data[4*(c+(l*width))] = red / (denominator-partialWeight);
+				finalImageData.data[4*(c+(l*width))+1] = green / (denominator-partialWeight);
+				finalImageData.data[4*(c+(l*width))+2] = blue / (denominator-partialWeight);
 				
 			};
 		};
@@ -378,28 +392,28 @@ $(function() {
 	};
 
 	$('#blur_filter').on('click',function(e){
-		smoothing = [1,1,1,1,2,1,1,1,1];
-		boxFiltering(smoothing);
+		smoothing = [1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1];
+		boxFiltering(smoothing,5);
 	});
 
 	$('#sharpening_filter').on('click',function(e){
 		smoothing = [-1,-1,-1,-1,9,-1,-1,-1,-1];
-		boxFiltering(smoothing);
+		boxFiltering(smoothing,3);
 	});
 
 	$('#raised_filter').on('click',function(e){
 		smoothing = [0,0,-2,0,2,0,1,0,0];
-		boxFiltering(smoothing);
+		boxFiltering(smoothing,3);
 	});
 
 	$('#motion_blur_filter').on('click',function(e){
 		smoothing = [0,0,1,0,0,0,1,0,0];
-		boxFiltering(smoothing);
+		boxFiltering(smoothing,3);
 	});
 
 	$('#laplacian_filter').on('click',function(e){
 		smoothing = [-1,-1,-1,-1,8,-1,-1,-1,-1];
-		boxFiltering(smoothing);
+		boxFiltering(smoothing,3);
 	});
 
 	$('#color_inversion_filter').on('click',function(e){
