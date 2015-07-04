@@ -392,8 +392,15 @@ $(function() {
 	};
 
 	$('#blur_filter').on('click',function(e){
-		smoothing = [1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1];
-		boxFiltering(smoothing,5);
+        var size = parseInt($('#convolutionSize').val());
+		smoothing = [];
+        half = size*size/2|0;
+        for(var k=0; k<(size*size); k++){
+            if(k == half)smoothing.push(2);
+            else smoothing.push(1);
+        }
+
+		boxFiltering(smoothing,size);
 	});
 
 	$('#sharpening_filter').on('click',function(e){
