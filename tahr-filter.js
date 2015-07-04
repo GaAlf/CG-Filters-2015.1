@@ -336,8 +336,31 @@ $(function() {
 		return matrix;
 	};
 
-	var blendImage = function(){
-		
+	var blendImage = function(firstWeight, secondWeight){
+		if(firstWeight+secondWeight != 1.0) return;
+
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var initial_canvas2 = $('#initial_canvas2')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = initial_canvas2.getImageData(0,0,width,height);
+
+		for (var i = 0; i < finalImageData.data.length; i+=4) {
+
+			var d = firstWeight*initialImageData.data[i] + secondWeight*finalImageData.data[i];
+			finalImageData.data[i] = Math.max(d,0.0);
+
+			d = firstWeight*initialImageData.data[i+1] + secondWeight*finalImageData.data[i+1];
+			finalImageData.data[i+1] = Math.max(d,0.0);
+
+			d = firstWeight*initialImageData.data[i+2] + secondWeight*finalImageData.data[i+2];
+			finalImageData.data[i+2] = Math.max(d,0.0);
+
+			finalImageData.data[i+3] = 255;
+		};
+
+		result_canvas.putImageData(finalImageData,0,0);
 	};
 
 	var getCropBox = function(){
@@ -414,8 +437,53 @@ $(function() {
 	$('#subImages_btn').on('click',function(e){
 		subImage();
 	});
+	
+	$('#firtsImageWeight').change(function(e){
+		var first = parseInt($('#firtsImageWeight').val());
+
+		if(first < 0){
+			$('#firtsImageWeight').val("0");
+			$('#secondImageWeight').val("100");
+			return;
+		}
+
+		if(first > 100){
+			$('#firtsImageWeight').val("100");
+			$('#secondImageWeight').val("0");
+			return;
+		}
+
+		$('#secondImageWeight').val((100-first));
+
+	});
+
+	$('#secondImageWeight').change(function(e){
+		var second = parseInt($('#secondImageWeight').val());
+
+		if(second < 0){
+			$('#firtsImageWeight').val("100");
+			$('#secondImageWeight').val("0");
+			return;
+		}
+
+		if(second > 100){
+			$('#firtsImageWeight').val("0");
+			$('#secondImageWeight').val("100");
+			return;
+		}
+
+		$('#firtsImageWeight').val((100-second));
+	});
 
 	$('#blendImages_btn').on('click',function(e){
-		blendImage();
+		var firstWeight = $('#firtsImageWeight').val();
+		var secondWeight = $('#secondImageWeight').val();
+
+		firstWeight = parseFloat(firstWeight)/100;
+		secondWeight = parseFloat(secondWeight)/100;
+
+		if(firstWeight < 0.0 || firstWeight > 1.0 || secondWeight < 0.0 || secondWeight > 1.0) return;
+
+		blendImage(firstWeight,secondWeight);
 	});
 });
