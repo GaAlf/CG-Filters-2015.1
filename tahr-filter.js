@@ -4,6 +4,7 @@ $(function() {
 	var height = $('#initial_canvas').height();
 
 	function loadImage(inputOrigin,e){
+
 		var file = e.target.files[0],
 			imageType = /image.*/;
 
@@ -12,7 +13,7 @@ $(function() {
 
 		var reader = new FileReader();
 		reader.onload = function(e){
-			var $img = $('<img>', { src: e.target.result });
+			var $img = $('<img>', { src: e.target.result});
 			var canvas = $(inputOrigin)[0];
 			var context = canvas.getContext('2d');
 			context.clearRect(0,0,width,height);
@@ -24,12 +25,16 @@ $(function() {
 		reader.readAsDataURL(file);
 	}
 
+	var loadImageFromFile = function(fileName){
+		
+	}
+
 	$('#input_file').change(function(e) {
-		loadImage('#initial_canvas',e);        
+		loadImage('#initial_canvas',e);
 	});
 
 	$('#input_file2').change(function(e) {
-		loadImage('#initial_canvas2',e);       
+		loadImage('#initial_canvas2',e,"");       
 	});
 
 	var hidden_tools = function(){
@@ -216,6 +221,7 @@ $(function() {
 
 		var denominator = 0;
 		for(var k=0; k<kernel.length; k++) denominator += kernel[k];
+		if(denominator == 0) denominator = 1;
 
 		var initialImageData = initial_canvas.getImageData(0,0,width,height);
 		var finalImageData = result_canvas.getImageData(0,0,width,height);
@@ -264,8 +270,10 @@ $(function() {
 
 		var denominator1 = 0, denominator2 = 0;
 		for(var k=0; k<kernel1.length; k++) denominator1 += kernel1[k];
+		if(denominator1 == 0) denominator1 = 1;
 
 		for(var k=0; k<kernel2.length; k++) denominator2 += kernel2[k];
+		if(denominator2 == 0) denominator2 = 1;
 
 		var initialImageData = initial_canvas.getImageData(0,0,width,height);
 		var finalImageData = result_canvas.getImageData(0,0,width,height);
