@@ -45,6 +45,28 @@ $(function() {
 
 	}
 
+	var blackNwhite = function() {
+
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+
+		for (var i = 0; i < finalImageData.data.length; i+=4) {
+			//RED=30%, GREEN=59% and BLUE=11%
+			var d = initialImageData.data[i]*0.3 + initialImageData.data[i+1]*0.59 + initialImageData.data[i+2]*0.11;
+			finalImageData.data[i] = d;
+			finalImageData.data[i+1] = d;
+			finalImageData.data[i+2] = d;
+			finalImageData.data[i+3] = 255;
+		};
+
+		result_canvas.putImageData(finalImageData,0,0);
+
+	}
+
+
 	var boxFiltering = function(kernel) {
 
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
@@ -142,6 +164,10 @@ $(function() {
 
 	$('#color_inversion_filter').on('click',function(e){
 		invertColors();
+	});
+
+	$('#black_and_white_filter').on('click',function(e){
+		blackNwhite();
 	});
 
 	$('#dynamic_matrix_btn').on('click',function(e){
