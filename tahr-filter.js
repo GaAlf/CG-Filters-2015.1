@@ -25,6 +25,24 @@ $(function() {
 		});
 	}
 
+	var invertColors = function() {
+
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+
+    	var imageData = initial_canvas.getImageData(0,0,width,height);
+
+		for (var i = 0; i < imageData.data.length; i+=4) {
+			imageData.data[i] = 255 - imageData.data[i];
+			imageData.data[i+1] = 255 - imageData.data[i+1];
+			imageData.data[i+2] = 255 - imageData.data[i+2];
+			imageData.data[i+3] = 255;
+		};
+
+		result_canvas.putImageData(imageData,0,0);
+
+	}
+
 	var boxFiltering = function(kernel) {
 
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
@@ -32,6 +50,33 @@ $(function() {
 
 		var denominator = 0;
 		for(var k=0; k<kernel.length; k++) denominator += kernel[k];
+
+		/*
+    	var imageData = initial_canvas.getImageData(0,0,width,height);
+
+    	var l = 1, c = 1;
+
+		for (var i = 0; i < imageData.data.length; i+=4) {
+
+			imageData.data[i+3] = 255;
+
+			var red = 0, green = 0, blue = 0;
+
+			imageData.data[i] = 255 - imageData.data[i];
+			imageData.data[i+1] = 255 - imageData.data[i+1];
+			imageData.data[i+2] = 255 - imageData.data[i+2];
+
+			if(c < width-1) {
+				c++;
+			}
+			else if(l < height-1) {
+				c=0;
+				l++;
+			}
+		};
+
+		result_canvas.putImageData(imageData,0,0);
+		*/
 
 		for(var l=1; l<height-1; l++){
 			for(var c=1; c<width-1; c++){
@@ -85,6 +130,10 @@ $(function() {
 	$('#edge_detection_filter').on('click',function(e){
 		smothing = [-1,-1,-1,-1,8,-1,-1,-1,-1];
 		boxFiltering(smothing);
+	});
+
+	$('#color_inversion_filter').on('click',function(e){
+		invertColors();
 	});
 
 
