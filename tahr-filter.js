@@ -46,7 +46,6 @@ $(function() {
 	};
 
 	var blackNwhite = function() {
-
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
 
@@ -66,7 +65,6 @@ $(function() {
 	};
 
 	var sepia = function() {
-
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
 
@@ -84,6 +82,58 @@ $(function() {
 			finalImageData.data[i+1] = Math.min(d,255.0);
 			d = initialImageData.data[i]*0.272 + initialImageData.data[i+1]*0.534 + initialImageData.data[i+2]*0.131;
 			finalImageData.data[i+2] = Math.min(d,255.0);
+			finalImageData.data[i+3] = 255;
+		};
+
+		result_canvas.putImageData(finalImageData,0,0);
+	};
+
+	var addImage = function(image2) {
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+
+		result_canvas.drawImage(image2,0,0);
+
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+
+		for (var i = 0; i < finalImageData.data.length; i+=4) {
+
+			var d = initialImageData.data[i] + finalImageData.data[i];
+			finalImageData.data[i] = Math.min(d,255.0);
+
+			d = initialImageData.data[i+1] + finalImageData.data[i+1];
+			finalImageData.data[i+1] = Math.min(d,255.0);
+
+			d = initialImageData.data[i+2] + finalImageData.data[i+2];
+			finalImageData.data[i+2] = Math.min(d,255.0);
+
+			finalImageData.data[i+3] = 255;
+		};
+
+		result_canvas.putImageData(finalImageData,0,0);
+	};
+
+	var subImage = function(image2) {
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+
+		result_canvas.drawImage(image2,0,0);
+
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+
+		for (var i = 0; i < finalImageData.data.length; i+=4) {
+
+			var d = initialImageData.data[i] - finalImageData.data[i];
+			finalImageData.data[i] = Math.max(d,0.0);
+
+			d = initialImageData.data[i+1] - finalImageData.data[i+1];
+			finalImageData.data[i+1] = Math.max(d,0.0);
+
+			d = initialImageData.data[i+2] - finalImageData.data[i+2];
+			finalImageData.data[i+2] = Math.max(d,0.0);
+
 			finalImageData.data[i+3] = 255;
 		};
 
