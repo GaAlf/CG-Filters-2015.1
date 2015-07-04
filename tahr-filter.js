@@ -107,6 +107,22 @@ $(function() {
 		}
 	}
 
+	var getDynamicMatrix = function(){
+
+		var matrix = [0,0,0,0,0,0,0,0,0];
+		for(var k=0; k<9; k++){
+			var matrix_pos = "#matrix_"+(k+1);
+			var value = $(matrix_pos).val();
+			if(value == ""){
+				value = "0";
+				$(matrix_pos).val("0");
+			}
+			value = parseInt(value);
+			matrix[k] = value;
+		}
+		return matrix;
+	}
+
 	$('#blur_filter').on('click',function(e){
 		smothing = [1,1,1,1,2,1,1,1,1];
 		boxFiltering(smothing);
@@ -136,5 +152,8 @@ $(function() {
 		invertColors();
 	});
 
-
+	$('#dynamic_matrix_btn').on('click',function(e){
+		var dynamic_matrix = getDynamicMatrix();
+		boxFiltering(dynamic_matrix);
+	});
 });
