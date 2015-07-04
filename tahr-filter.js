@@ -397,7 +397,7 @@ $(function() {
 		boxFiltering(smoothing);
 	});
 
-	$('#edge_detection_filter').on('click',function(e){
+	$('#laplacian_filter').on('click',function(e){
 		smoothing = [-1,-1,-1,-1,8,-1,-1,-1,-1];
 		boxFiltering(smoothing);
 	});
