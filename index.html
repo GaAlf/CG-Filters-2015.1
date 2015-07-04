@@ -13,63 +13,86 @@
 				<h1>Tahr Filter</h1>
 			</div>
 			<div class="row">
-				<input id="input_file" type="file" class="form-control"/>
+				<p>
+					<label class="control-label">Input Image 1</label>
+					<input id="input_file" type="file" class="form-control"/>
+				</p>
+			</div>
+			<div id="second_input" class="hidden">
+				<div class="row">
+					<p>
+						<label class="control-label">Input Image 2</label>
+						<input id="input_file2" type="file" class="form-control"/>
+					</p>
+				</div>
 			</div>
 			<div class="row">
 				<div id="tools_div" class="col-md-3">
-					<div class="row"><h3>Tools</h3></div>					
-					<div class="row"><h4>Dynamic Matrix of Convolution</h4></div>
 					<div class="row">
-						<table class="table table-bordered">
-							<tr>
-								<td><input id="matrix_1" value="0" type="number" class="form-control"/></td>
-								<td><input id="matrix_2" value="0" type="number" class="form-control"/></td>
-								<td><input id="matrix_3" value="0" type="number" class="form-control"/></td>
-							</tr>
-							<tr>
-								<td><input id="matrix_4" value="0" type="number" class="form-control"/></td>
-								<td><input id="matrix_5" value="1" type="number" class="form-control"/></td>
-								<td><input id="matrix_6" value="0" type="number" class="form-control"/></td>
-							</tr>
-							<tr>
-								<td><input id="matrix_7" value="0" type="number" class="form-control"/></td>
-								<td><input id="matrix_8" value="0" type="number" class="form-control"/></td>
-								<td><input id="matrix_9" value="0" type="number" class="form-control"/></td>
-							</tr>
-						</table>
-						<p><button id="dynamic_matrix_btn" class="btn btn-primary btn-block">Apply</button></p>
+						<h3>Tools</h3>
+						<select id="tools_control" class="form-control">
+							<option value="filters">Filters</option>
+							<option value="operations">Operations</option>
+						</select>
 					</div>
-					<div class="row"><h4>Crop</h4></div>
-					<div class="row"><h5>Box start</h5></div>
-					<div class="row">
-						<table class="table table-bordered">
-							<tr>
-								<td><input id="crop_x" value="0" type="number" class="form-control"/></td>
-								<td><input id="crop_y" value="0" type="number" class="form-control"/></td>
-							</tr>
-						</table>
+					<div id="tools_filters">
+						<div class="row"><h4>Dynamic Matrix of Convolution</h4></div>
+						<div class="row">
+							<table class="table table-bordered">
+								<tr>
+									<td><input id="matrix_1" value="0" type="number" class="form-control"/></td>
+									<td><input id="matrix_2" value="0" type="number" class="form-control"/></td>
+									<td><input id="matrix_3" value="0" type="number" class="form-control"/></td>
+								</tr>
+								<tr>
+									<td><input id="matrix_4" value="0" type="number" class="form-control"/></td>
+									<td><input id="matrix_5" value="1" type="number" class="form-control"/></td>
+									<td><input id="matrix_6" value="0" type="number" class="form-control"/></td>
+								</tr>
+								<tr>
+									<td><input id="matrix_7" value="0" type="number" class="form-control"/></td>
+									<td><input id="matrix_8" value="0" type="number" class="form-control"/></td>
+									<td><input id="matrix_9" value="0" type="number" class="form-control"/></td>
+								</tr>
+							</table>
+							<p><button id="dynamic_matrix_btn" class="btn btn-primary btn-block">Apply</button></p>
+						</div>
+						
+						
+						<div class="row"><h4>Filters</h4></div>
+						<div class="row btn-group">
+							<p><button id="blur_filter" class="btn btn-primary btn-block">Blur</button></p>
+							<p><button id="sharpening_filter" class="btn btn-primary btn-block">Sharpen</button></p>
+							<p><button id="raised_filter" class="btn btn-primary btn-block">Raise</button></p>
+							<p><button id="motion_blur_filter" class="btn btn-primary btn-block">Motion Blur</button></p>
+							<p><button id="edge_detection_filter" class="btn btn-primary btn-block">Edge Detection</button></p>
+							<p><button id="color_inversion_filter" class="btn btn-primary btn-block">Invert Colors</button></p>
+							<p><button id="black_and_white_filter" class="btn btn-primary btn-block">Black'n'White</button></p>
+							<p><button id="sepia_filter" class="btn btn-primary btn-block">Sepia</button></p>
+							<p><button id="sobel_filter"class="btn btn-primary btn-block">Sobel Edge Detection</button></p>
+						</div>
 					</div>
-					<div class="row"><h5>Box size</h5></div>
-					<div class="row">
-						<table class="table table-bordered">
-							<tr>
-								<td><input id="crop_dx" value="0" type="number" class="form-control"/></td>
-								<td><input id="crop_dy" value="0" type="number" class="form-control"/></td>
-							</tr>
-						</table>
-					</div>
-					<p><button id="crop_btn" class="btn btn-primary btn-block">Apply</button></p>
-					<div class="row"><h4>Filters</h4></div>
-					<div class="row btn-group">
-						<p><button id="blur_filter" class="btn btn-primary btn-block">Blur</button></p>
-						<p><button id="sharpening_filter" class="btn btn-primary btn-block">Sharpen</button></p>
-						<p><button id="raised_filter" class="btn btn-primary btn-block">Raise</button></p>
-						<p><button id="motion_blur_filter" class="btn btn-primary btn-block">Motion Blur</button></p>
-						<p><button id="edge_detection_filter" class="btn btn-primary btn-block">Edge Detection</button></p>
-						<p><button id="color_inversion_filter" class="btn btn-primary btn-block">Invert Colors</button></p>
-						<p><button id="black_and_white_filter" class="btn btn-primary btn-block">Black'n'White</button></p>
-						<p><button id="sepia_filter" class="btn btn-primary btn-block">Sepia</button></p>
-						<p><button id="sobel_filter"class="btn btn-primary btn-block">Sobel Edge Detection</button></p>
+					<div id="tools_operations" class="hidden">
+						<div class="row"><h4>Crop</h4></div>
+						<div class="row"><h5>Box start</h5></div>
+						<div class="row">
+							<table class="table table-bordered">
+								<tr>
+									<td><input id="crop_x" value="0" type="number" class="form-control"/></td>
+									<td><input id="crop_y" value="0" type="number" class="form-control"/></td>
+								</tr>
+							</table>
+						</div>
+						<div class="row"><h5>Box size</h5></div>
+						<div class="row">
+							<table class="table table-bordered">
+								<tr>
+									<td><input id="crop_dx" value="0" type="number" class="form-control"/></td>
+									<td><input id="crop_dy" value="0" type="number" class="form-control"/></td>
+								</tr>
+							</table>
+						</div>
+						<p><button id="crop_btn" class="btn btn-primary btn-block">Apply</button></p>
 					</div>
 				</div>
 				<div class="col-md-1"></div>
@@ -77,6 +100,12 @@
 					<div class="row"><h3>Input image</h3></div>
 					<div class="row">
 						<canvas id="initial_canvas" class="img-rounded" width="800px" height="500px" style="border:1px solid #000000;"></canvas>
+					</div>
+					<div id="second_canvas" class="hidden">
+						<div class="row"><h3>Input image 2</h3></div>
+						<div class="row">
+							<canvas id="initial_canvas2" class="img-rounded" width="800px" height="500px" style="border:1px solid #000000;"></canvas>
+						</div>
 					</div>
 					<div class="row"><h3>Output image</h3></div>
 					<div class="row">

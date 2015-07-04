@@ -3,7 +3,7 @@ $(function() {
 	var width = $('#initial_canvas').width();
 	var height = $('#initial_canvas').height();
 
-	$('#input_file').change(function(e) {
+	function loadImage(inputOrigin,e){
 		var file = e.target.files[0],
 			imageType = /image.*/;
 
@@ -11,20 +11,42 @@ $(function() {
 			return;
 
 		var reader = new FileReader();
-		reader.onload = fileOnload;
-		reader.readAsDataURL(file);        
+		reader.onload = function(e){
+			var $img = $('<img>', { src: e.target.result });
+			var canvas = $(inputOrigin)[0];
+			var context = canvas.getContext('2d');
+			context.clearRect(0,0,width,height);
+
+			$img.load(function() {
+				context.drawImage(this, 0, 0);
+			});
+		};
+		reader.readAsDataURL(file);
+	}
+
+	$('#input_file').change(function(e) {
+		loadImage('#initial_canvas',e);        
 	});
 
-	function fileOnload(e) {
-		var $img = $('<img>', { src: e.target.result });
-		var canvas = $('#initial_canvas')[0];
-		var context = canvas.getContext('2d');
-		context.clearRect(0,0,width,height);
+	$('#input_file2').change(function(e) {
+		loadImage('#initial_canvas2',e);       
+	});
 
-		$img.load(function() {
-			context.drawImage(this, 0, 0);
-		});
-	}
+	$("#tools_control").change(function(e){
+		var tool = $("#tools_control").val();
+		if(tool == "operations"){
+			$("#second_input").removeClass();
+			$("#second_canvas").removeClass();
+			$("#tools_operations").removeClass();
+			$("#tools_filters").addClass("hidden");
+		}
+		else if(tool == "filters"){
+			$("#second_input").addClass("hidden");
+			$("#second_canvas").addClass("hidden");
+			$("#tools_filters").removeClass();
+			$("#tools_operations").addClass("hidden");
+		}
+	});
 
 	var invertColors = function() {
 
@@ -162,8 +184,8 @@ $(function() {
 		var denominator = 0;
 		for(var k=0; k<kernel.length; k++) denominator += kernel[k];
 
-    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
-    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+		var initialImageData = initial_canvas.getImageData(0,0,width,height);
+		var finalImageData = result_canvas.getImageData(0,0,width,height);
 
 		for(var l=1; l<height-1; l++) {
 			for(var c=1; c<width-1; c++) {
@@ -212,8 +234,8 @@ $(function() {
 
 		for(var k=0; k<kernel2.length; k++) denominator2 += kernel2[k];
 
-    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
-    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+		var initialImageData = initial_canvas.getImageData(0,0,width,height);
+		var finalImageData = result_canvas.getImageData(0,0,width,height);
 
 		for(var l=1; l<height-1; l++) {
 			for(var c=1; c<width-1; c++) {
