@@ -30,16 +30,17 @@ $(function() {
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
 
-    	var imageData = initial_canvas.getImageData(0,0,width,height);
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = result_canvas.getImageData(0,0,width,height);
 
-		for (var i = 0; i < imageData.data.length; i+=4) {
-			imageData.data[i] = 255 - imageData.data[i];
-			imageData.data[i+1] = 255 - imageData.data[i+1];
-			imageData.data[i+2] = 255 - imageData.data[i+2];
-			imageData.data[i+3] = 255;
+		for (var i = 0; i < finalImageData.data.length; i+=4) {
+			finalImageData.data[i] = 255 - initialImageData.data[i];
+			finalImageData.data[i+1] = 255 - initialImageData.data[i+1];
+			finalImageData.data[i+2] = 255 - initialImageData.data[i+2];
+			finalImageData.data[i+3] = 255;
 		};
 
-		result_canvas.putImageData(imageData,0,0);
+		result_canvas.putImageData(finalImageData,0,0);
 
 	}
 
@@ -51,39 +52,16 @@ $(function() {
 		var denominator = 0;
 		for(var k=0; k<kernel.length; k++) denominator += kernel[k];
 
-		/*
-    	var imageData = initial_canvas.getImageData(0,0,width,height);
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = result_canvas.getImageData(0,0,width,height);
 
-    	var l = 1, c = 1;
+		for(var l=1; l<height-1; l++) {
+			for(var c=1; c<width-1; c++) {
+		
+				finalImageData.data[4*(c+(l*width))+3] = 255;
 
-		for (var i = 0; i < imageData.data.length; i+=4) {
-
-			imageData.data[i+3] = 255;
-
-			var red = 0, green = 0, blue = 0;
-
-			imageData.data[i] = 255 - imageData.data[i];
-			imageData.data[i+1] = 255 - imageData.data[i+1];
-			imageData.data[i+2] = 255 - imageData.data[i+2];
-
-			if(c < width-1) {
-				c++;
-			}
-			else if(l < height-1) {
-				c=0;
-				l++;
-			}
-		};
-
-		result_canvas.putImageData(imageData,0,0);
-		*/
-
-		for(var l=1; l<height-1; l++){
-			for(var c=1; c<width-1; c++){
-				var pixel_data = result_canvas.getImageData(c,l,1,1);
-				pixel_data.data[3] = 255;
 				var red = 0, green = 0, blue = 0;
-				for(var k=0; k<kernel.length; k++){
+				for (var k=0; k<kernel.length; k++) {
 					var x = c, y = l;
 
 					if(k/3 == 0) y++;
@@ -92,19 +70,30 @@ $(function() {
 					if(k%3 == 0) x--;
 					else if(k%3 == 2) x++;
 
-					var pixel_temp = initial_canvas.getImageData(x,y,1,1);
-					red += pixel_temp.data[0]*kernel[k];
-					green += pixel_temp.data[1]*kernel[k];
-					blue += pixel_temp.data[2]*kernel[k];
-					
-					//massive processing here.
-				}
-				pixel_data.data[0] = red / denominator;
-				pixel_data.data[1] = green / denominator;
-				pixel_data.data[2] = blue / denominator;
-				result_canvas.putImageData(pixel_data,c,l);
-			}
-		}
+					var r = initialImageData.data[4*(x+(y*width))];
+					var g = initialImageData.data[4*(x+(y*width))+1];
+					var b = initialImageData.data[4*(x+(y*width))+2];
+
+					red += r * kernel[k];
+					green += g * kernel[k];
+					blue += b * kernel[k];
+
+					if(k == kernel.length-1 && l == height-2 && c == height-2) {
+						console.log("Eu entrei aqui.");
+						console.log( finalImageData.data.length - (4+4*width) );
+						console.log( 4*(c+(l*width)) );
+					}				
+				};
+
+				finalImageData.data[4*(c+(l*width))] = red / denominator;
+				finalImageData.data[4*(c+(l*width))+1] = green / denominator;
+				finalImageData.data[4*(c+(l*width))+2] = blue / denominator;
+				
+			};
+		};
+
+		result_canvas.putImageData(finalImageData,0,0);
+
 	}
 
 	$('#blur_filter').on('click',function(e){
