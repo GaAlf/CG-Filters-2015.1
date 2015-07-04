@@ -43,7 +43,7 @@ $(function() {
 
 		result_canvas.putImageData(finalImageData,0,0);
 
-	}
+	};
 
 	var blackNwhite = function() {
 
@@ -64,7 +64,7 @@ $(function() {
 
 		result_canvas.putImageData(finalImageData,0,0);
 
-	}
+	};
 
 	var crop = function(x,y,dx,dy) {
 
@@ -75,7 +75,7 @@ $(function() {
 
 		result_canvas.putImageData(finalImageData,0,0);
 
-	}
+	};
 
 
 	var boxFiltering = function(kernel) {
@@ -124,7 +124,61 @@ $(function() {
 
 		result_canvas.putImageData(finalImageData,0,0);
 
-	}
+	};
+
+	var boxFiltering2Kernels = function(kernel1, kernel2) {
+
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+		
+		result_canvas.clearRect(0,0,width,height);
+
+		var denominator1 = 0, denominator2 = 0;
+		for(var k=0; k<kernel1.length; k++) denominator1 += kernel1[k];
+
+		for(var k=0; k<kernel2.length; k++) denominator2 += kernel2[k];
+
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+
+		for(var l=1; l<height-1; l++) {
+			for(var c=1; c<width-1; c++) {
+		
+				finalImageData.data[4*(c+(l*width))+3] = 255;
+
+				var red1 = 0, green1 = 0, blue1 = 0;
+				var red2 = 0, green2 = 0, blue2 = 0;
+				for (var k=0; k<kernel1.length; k++) {
+					var x = c, y = l;
+
+					if(k/3 == 0) y++;
+					else if(k/3 == 2) y--;
+
+					if(k%3 == 0) x--;
+					else if(k%3 == 2) x++;
+
+					var r = initialImageData.data[4*(x+(y*width))];
+					var g = initialImageData.data[4*(x+(y*width))+1];
+					var b = initialImageData.data[4*(x+(y*width))+2];
+
+					red1 += r * kernel1[k];
+					green1 += g * kernel1[k];
+					blue1 += b * kernel1[k];
+					
+					red2 += r * kernel2[k];
+					green2 += g * kernel2[k];
+					blue2 += b * kernel2[k];
+				};
+
+				finalImageData.data[4*(c+(l*width))] = Math.round(Math.sqrt(Math.pow(red1 / denominator1,2) + Math.pow(red2 / denominator2,2)));
+				finalImageData.data[4*(c+(l*width))+1] = Math.round(Math.sqrt(Math.pow(green1 / denominator1,2) + Math.pow(green2 / denominator2,2)));
+				finalImageData.data[4*(c+(l*width))+2] = Math.round(Math.sqrt(Math.pow(blue1 / denominator1,2) + Math.pow(blue2 / denominator2,2)));
+				
+			};
+		};
+		
+		result_canvas.putImageData(finalImageData,0,0);
+	};
 
 	var getDynamicMatrix = function(){
 
@@ -140,7 +194,7 @@ $(function() {
 			matrix[k] = value;
 		}
 		return matrix;
-	}
+	};
 
 	var getCropBox = function(){
 
@@ -154,7 +208,7 @@ $(function() {
 		temp = parseInt( $('#crop_dy').val() );
 		if(temp < ret[3]) ret[3] = temp;
 		return ret;
-	}
+	};
 
 	$('#blur_filter').on('click',function(e){
 		smoothing = [1,1,1,1,2,1,1,1,1];
@@ -197,5 +251,11 @@ $(function() {
 	$('#crop_btn').on('click',function(e){
 		var crop_box = getCropBox();
 		crop(crop_box[0],crop_box[1],crop_box[2],crop_box[3]);
+	});
+
+	$('#sobel_filter').on('click',function(e){
+		gx = [-1,0,1,-2,0,2,-1,0,1];
+		gy = [1,2,1,0,0,0,-1,-2,-1];
+		boxFiltering2Kernels(gx,gy);
 	});
 });
