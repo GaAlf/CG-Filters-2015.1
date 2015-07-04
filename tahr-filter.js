@@ -42,6 +42,7 @@ $(function() {
 		$("#tools_crop").addClass("hidden");
 		$("#tools_addImages").addClass("hidden");
 		$("#tools_subImages").addClass("hidden");
+		$("#tools_blendImages").addClass("hidden");
 		$("#tools_resize").addClass("hidden");
 		$("#tools_scale").addClass("hidden");
 	};
@@ -76,6 +77,10 @@ $(function() {
 			case "subImages":
 				show_secondInput();
 				$("#tools_subImages").removeClass();
+				break;
+			case "blendImages":
+				show_secondInput();
+				$("#tools_blendImages").removeClass();
 				break;
 			case "resizeImage":
 				$("#tools_resize").removeClass();
@@ -148,14 +153,13 @@ $(function() {
 		result_canvas.putImageData(finalImageData,0,0);
 	};
 
-	var addImage = function(image2) {
+	var addImage = function() {
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var initial_canvas2 = $('#initial_canvas2')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
 
-		result_canvas.drawImage(image2,0,0);
-
     	var initialImageData = initial_canvas.getImageData(0,0,width,height);
-    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+    	var finalImageData = initial_canvas2.getImageData(0,0,width,height);
 
 		for (var i = 0; i < finalImageData.data.length; i+=4) {
 
@@ -174,14 +178,13 @@ $(function() {
 		result_canvas.putImageData(finalImageData,0,0);
 	};
 
-	var subImage = function(image2) {
+	var subImage = function() {
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var initial_canvas2 = $('#initial_canvas2')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
 
-		result_canvas.drawImage(image2,0,0);
-
     	var initialImageData = initial_canvas.getImageData(0,0,width,height);
-    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+    	var finalImageData = initial_canvas2.getImageData(0,0,width,height);
 
 		for (var i = 0; i < finalImageData.data.length; i+=4) {
 
@@ -333,6 +336,10 @@ $(function() {
 		return matrix;
 	};
 
+	var blendImage = function(){
+		
+	};
+
 	var getCropBox = function(){
 
 		var ret = [0,0,width,height];
@@ -398,5 +405,17 @@ $(function() {
 		gx = [-1,0,1,-2,0,2,-1,0,1];
 		gy = [1,2,1,0,0,0,-1,-2,-1];
 		boxFiltering2Kernels(gx,gy);
+	});
+
+	$('#addImages_btn').on('click',function(e){
+		addImage();
+	});
+
+	$('#subImages_btn').on('click',function(e){
+		subImage();
+	});
+
+	$('#blendImages_btn').on('click',function(e){
+		blendImage();
 	});
 });
