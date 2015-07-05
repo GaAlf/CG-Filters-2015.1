@@ -81,6 +81,25 @@
 								<input type="number" min="1" value="1" id="gaussian_radius" class="form-control"/>
 							</p>
 						</div>
+						<div class="row"><h4>Selection</h4></div>
+						<div class="row"><h5>Box start</h5></div>
+						<div class="row">
+							<table class="table table-bordered">
+								<tr>
+									<td><input id="selection_x" value="0" type="number" class="form-control selector"/></td>
+									<td><input id="selection_y" value="0" type="number" class="form-control selector"/></td>
+								</tr>
+							</table>
+						</div>
+						<div class="row"><h5>Box size</h5></div>
+						<div class="row">
+							<table class="table table-bordered">
+								<tr>
+									<td><input id="selection_dx" value="800" type="number" class="form-control selector"/></td>
+									<td><input id="selection_dy" value="500" type="number" class="form-control selector"/></td>
+								</tr>
+							</table>
+						</div>
 						<div class="row btn-group">
 							<p><button id="blur_filter" class="btn btn-primary btn-block">Blur</button></p>
 							<p><button id="gaussianBlur_filter" class="btn btn-primary btn-block">Gaussian Blur</button></p>

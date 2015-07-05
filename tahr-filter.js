@@ -253,7 +253,7 @@ $(function() {
 					if(temp2 < halfLineSize) x -= halfLineSize - temp2;
 					else if(temp2 > halfLineSize) x += temp2 - halfLineSize;
 
-                    if(x < 0 || x > width || y < 0 || y > height ){
+                    if(x < 0 || x >= width || y < 0 || y >= height ){
                         partialWeight += kernel[k];   
                         continue;
                     }
@@ -377,6 +377,86 @@ $(function() {
 		result_canvas.putImageData(finalImageData,0,0);
 	};
 
+	var getPixel = function(pos,data){
+		
+		var pixel = [];
+		for(var i=3; i>=0; i--){
+			pixel.push(data[pos+i]);
+		}
+		return pixel;
+	};
+
+	/*var bilinearInterpolation = function(newWidth,newHeight){
+
+		if(newWidth < width || newHeight < height) return;
+
+		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+
+    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
+    	var finalImageData = result_canvas.createImageData(newWidth,newHeight);
+
+		var col_proportion = newWidth/width;
+		var lin_proportion = newHeight/height;
+
+		for(var l=0; l<height-1; l++) {
+			for(var c=0; c<width-1; c++) {
+
+				var pixel1 = getPixel(4*(c+(l*width)),initialImageData.data);
+				var pixel2 = getPixel(4*(c+1+(l*width)),initialImageData.data);
+				var pixel3 = getPixel(4*(c+((l+1)*width)),initialImageData.data);
+				var pixel4 = getPixel(4*(c+1+((l+1)*width)),initialImageData.data);
+
+				for(var x=0; x<lin_proportion; x++){
+					for(var y=0; y<col_proportion; y++){
+						var col = col_proportion*c + y;
+						var lin = lin_proportion*l + x;
+
+						if(col < 0 || col >= newWidth || lin < 0 || lin >= newHeight ) continue;
+
+						var pos = 4*(width*lin + col);
+
+						var p1 = y*(1/col_proportion);
+						var p2 = 1 - p1;
+						var p3 = x*(1/lin_proportion);
+						var p4 = 1 - p3;
+
+						var inter1 = [0,0,0,0];
+						inter1[0] = p2*pixel1[0] + p1*pixel2[0];
+						inter1[1] = p2*pixel1[1] + p1*pixel2[1];
+						inter1[2] = p2*pixel1[2] + p1*pixel2[2];
+						
+						var inter2 = [0,0,0,0];
+						inter2[0] = p2*pixel3[0] + p1*pixel4[0];
+						inter2[1] = p2*pixel1[1] + p1*pixel2[1];
+						inter2[2] = p2*pixel1[2] + p1*pixel2[2];
+						
+						var inter3 = [0,0,0,0];
+						inter3[0] = p4*inter1[0] + p3*inter2[0];
+						inter3[1] = p4*inter1[1] + p3*inter2[1];
+						inter3[2] = p4*inter1[2] + p3*inter2[2];
+
+						inter3[0] = Math.round(inter3[0]);
+						inter3[1] = Math.round(inter3[1]);
+						inter3[2] = Math.round(inter3[2]);
+						
+						finalImageData.data[pos] = inter3[0];
+						finalImageData.data[pos+1] = inter3[1];
+						finalImageData.data[pos+2] = inter3[2];
+						finalImageData.data[pos+3] = 255;
+						
+					}
+				}
+			}
+		}
+		
+		result_canvas.putImageData(finalImageData,0,0);
+	};*/
+	
+	$("selector").change(function(e){
+		
+	});
+
 	var getCropBox = function(){
 
 		var ret = [0,0,width,height];
@@ -485,6 +565,8 @@ $(function() {
 
 	$('#crop_btn').on('click',function(e){
 		var crop_box = getCropBox();
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+		result_canvas.clearRect(0,0,width,height);
 		crop(crop_box[0],crop_box[1],crop_box[2],crop_box[3]);
 	});
 
