@@ -427,6 +427,32 @@ $(function() {
 		return bin;
 	};
 
+	var pascalTriangle = function(level){
+		
+		if(level == 0) return [1];
+		if(level == 1) return [1,1];
+		if(level == 2) return [1,2,1]; 
+		
+		var list = pascalTriangle(level-1);
+		var half = list/2|0;
+		var newList = [1];
+		for(var i=list.length-2; i>=0; i++){
+			if(i >= half){
+				var val = list[i-1] + list[i];
+				newList.push(val);
+			}
+			else{
+				var val = list[i-2] + list[i-1];
+				newList.push(val);
+			}
+		}
+	
+		return newList;
+	};
+
+	
+	console.log("uhuu pascal:"+pascalTriangle(2));
+
 	$('#gaussianBlur_filter').on('click',function(e){
 		var size = parseInt($('#convolutionSize').val());
 		var gaussianBlur = [];
@@ -484,7 +510,7 @@ $(function() {
 
 	$('#dynamic_matrix_btn').on('click',function(e){
 		var dynamic_matrix = getDynamicMatrix();
-		boxFiltering(dynamic_matrix);
+		boxFiltering(dynamic_matrix,3);
 	});
 
 	$('#crop_btn').on('click',function(e){
