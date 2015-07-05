@@ -403,30 +403,6 @@ $(function() {
 		boxFiltering(blur,size);
 	});
 
-	var getBinomium = function(size){
-
-		var bin = [];
-		switch(size){
-			case 3:
-				bin = [1,2,1];
-				break;
-			case 5:
-				bin = [1,4,6,4,1];
-				break;
-			case 7:
-				bin = [1,6,15,20,15,6,1];
-				break;
-			case 9:
-				bin = [1,8,28,56,70,56,28,8,1];
-				break;
-			case 11:
-				bin = [1,10,45,120,210,252,210,120,45,10,1];
-				break;
-		}
-
-		return bin;
-	};
-
 	var pascalTriangle = function(level){
 		
 		if(level == 0) return [1];
@@ -445,9 +421,12 @@ $(function() {
 	};
 
 	$('#gaussianBlur_filter').on('click',function(e){
-		var size = parseInt($('#convolutionSize').val());
+		var radius = parseInt($('#gaussian_radius').val());
+		if(radius < 1) return;
+		
+		var size = 2*radius+1;
 		var gaussianBlur = [];
-		binomium = getBinomium(size);
+		binomium = pascalTriangle(2*radius);
 		weight = 0;
 		for(var i=0; i<size; i++){
 			weight += binomium[i];

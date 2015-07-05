@@ -67,7 +67,7 @@
 						<div class="row"><h4>Filters</h4></div>
 						<div class="row">
 							<p>
-								<h4>Size of convolution matrix</h4>
+								<h4>Size of matrix of blur</h4>
 								<select id="convolutionSize" class="form-control">
 									<option value="3">3x3</option>
 									<option value="5">5x5</option>
@@ -75,6 +75,10 @@
 									<option value="9">9x9</option>
 									<option value="11">11x11</option>
 								</select>
+							</p>
+							<p>
+								<h4>Radius of Gaussian</h4>
+								<input type="number" min="1" value="1" id="gaussian_radius" class="form-control"/>
 							</p>
 						</div>
 						<div class="row btn-group">
