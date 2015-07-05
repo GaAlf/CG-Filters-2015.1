@@ -392,35 +392,82 @@ $(function() {
 	};
 
 	$('#blur_filter').on('click',function(e){
-        var size = parseInt($('#convolutionSize').val());
-		smoothing = [];
-        half = size*size/2|0;
-        for(var k=0; k<(size*size); k++){
-            if(k == half)smoothing.push(2);
-            else smoothing.push(1);
-        }
+		var size = parseInt($('#convolutionSize').val());
+		var blur = [];
+		half = size*size/2|0;
+		for(var k=0; k<(size*size); k++){
+			if(k == half)blur.push(2);
+			else blur.push(1);
+		}
 
-		boxFiltering(smoothing,size);
+		boxFiltering(blur,size);
+	});
+
+	var getBinomium = function(size){
+
+		var bin = [];
+		switch(size){
+			case 3:
+				bin = [1,2,1];
+				break;
+			case 5:
+				bin = [1,4,6,4,1];
+				break;
+			case 7:
+				bin = [1,6,15,20,15,6,1];
+				break;
+			case 9:
+				bin = [1,8,28,56,70,56,28,8,1];
+				break;
+			case 11:
+				bin = [1,10,45,120,210,252,210,120,45,10,1];
+				break;
+		}
+
+		return bin;
+	};
+
+	$('#gaussianBlur_filter').on('click',function(e){
+		var size = parseInt($('#convolutionSize').val());
+		var gaussianBlur = [];
+		binomium = getBinomium(size);
+		weight = 0;
+		for(var i=0; i<size; i++){
+			weight += binomium[i];
+		}
+
+		for(var k=0; k<(size*size); k++){
+			var val = binomium[k%size]*binomium[(k/size)|0];
+			val = val/weight;
+			gaussianBlur.push(val);
+		};
+
+		boxFiltering(gaussianBlur,size);
 	});
 
 	$('#sharpening_filter').on('click',function(e){
-		smoothing = [-1,-1,-1,-1,9,-1,-1,-1,-1];
-		boxFiltering(smoothing,3);
+		var sharpening = [-1,-1,-1,-1,9,-1,-1,-1,-1];
+		boxFiltering(sharpening,3);
+	});
+
+	$('#unsharpening_filter').on('click',function(e){
+		var unsharpening = [1,4,6,4,1,4,16,24,16,4,6,24,-476,24,6,4,16,24,16,4,1,4,6,4,1];
+		boxFiltering(unsharpening,5);
 	});
 
 	$('#raised_filter').on('click',function(e){
-		smoothing = [0,0,-2,0,2,0,1,0,0];
-		boxFiltering(smoothing,3);
+		var raised = [0,0,-2,0,2,0,1,0,0];
+		boxFiltering(raised,3);
 	});
 
 	$('#motion_blur_filter').on('click',function(e){
-		smoothing = [0,0,1,0,0,0,1,0,0];
-		boxFiltering(smoothing,3);
+		var motion_blur = [0,0,1,0,0,0,1,0,0];
+		boxFiltering(motion_blur,3);
 	});
 
 	$('#laplacian_filter').on('click',function(e){
-		smoothing = [-1,-1,-1,-1,8,-1,-1,-1,-1];
-		boxFiltering(smoothing,3);
+		var laplacian = [-1,-1,-1,-1,8,-1,-1,-1,-1];
+		boxFiltering(laplacian,3);
 	});
 
 	$('#color_inversion_filter').on('click',function(e){
