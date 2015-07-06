@@ -334,7 +334,8 @@ $(function() {
 
 				var red1 = 0, green1 = 0, blue1 = 0;
 				var red2 = 0, green2 = 0, blue2 = 0;
-                var partialWeight = 0;
+                var partialWeight1 = 0;
+                var partialWeight2 = 0;
 				for (var k=0; k<kernel1.length; k++) {
 					var x = c, y = l;
 
@@ -347,7 +348,8 @@ $(function() {
 					else if(temp2 > halfLineSize) x += temp2 - halfLineSize;
 
                     if(x < 0 || x >= width || y < 0 || y >= height ){
-                        partialWeight += kernel[k];   
+                        partialWeight1 += kernel1[k];
+                        partialWeight2 += kernel2[k];
                         continue;
                     }
 
@@ -364,9 +366,9 @@ $(function() {
 					blue2 += b * kernel2[k];
 				};
 
-				finalImageData.data[4*(c+(l*width))] = Math.round(Math.sqrt(Math.pow(red1 / denominator1,2) + Math.pow(red2 / denominator2,2)));
-				finalImageData.data[4*(c+(l*width))+1] = Math.round(Math.sqrt(Math.pow(green1 / denominator1,2) + Math.pow(green2 / denominator2,2)));
-				finalImageData.data[4*(c+(l*width))+2] = Math.round(Math.sqrt(Math.pow(blue1 / denominator1,2) + Math.pow(blue2 / denominator2,2)));
+				finalImageData.data[4*(c+(l*width))] = Math.round(Math.sqrt(Math.pow(red1 / (denominator1-partialWeight1),2) + Math.pow(red2 / (denominator2-partialWeight2),2)));
+				finalImageData.data[4*(c+(l*width))+1] = Math.round(Math.sqrt(Math.pow(green1 / (denominator1-partialWeight1),2) + Math.pow(green2 / (denominator2-partialWeight2),2)));
+				finalImageData.data[4*(c+(l*width))+2] = Math.round(Math.sqrt(Math.pow(blue1 / (denominator1-partialWeight1),2) + Math.pow(blue2 / (denominator2-partialWeight2),2)));
 				
 			};
 		};
