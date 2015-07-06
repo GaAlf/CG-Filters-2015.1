@@ -4,8 +4,10 @@
 		<title>Tahr Filter</title>
 		<link rel="stylesheet" href="Libraries/bootstrap-3.3.5-dist/css/bootstrap.min.css">
 		<link rel="stylesheet" href="Libraries/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="Libraries/jquery.imgareaselect-0.9.10/css/imgareaselect-default.css">
 		<script src="Libraries/jquery-2.1.4.min.js"></script>
 		<script src="Libraries/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+		<script src="Libraries/jquery.imgareaselect-0.9.10/scripts/jquery.imgareaselect.pack.js"></script>
 	</head>
 	<body>
 		<div class="container">
@@ -81,25 +83,6 @@
 								<input type="number" min="1" value="1" id="gaussian_radius" class="form-control"/>
 							</p>
 						</div>
-						<div class="row"><h4>Selection</h4></div>
-						<div class="row"><h5>Box start</h5></div>
-						<div class="row">
-							<table class="table table-bordered">
-								<tr>
-									<td><input id="selection_x" value="0" type="number" class="form-control selector"/></td>
-									<td><input id="selection_y" value="0" type="number" class="form-control selector"/></td>
-								</tr>
-							</table>
-						</div>
-						<div class="row"><h5>Box size</h5></div>
-						<div class="row">
-							<table class="table table-bordered">
-								<tr>
-									<td><input id="selection_dx" value="800" type="number" class="form-control selector"/></td>
-									<td><input id="selection_dy" value="500" type="number" class="form-control selector"/></td>
-								</tr>
-							</table>
-						</div>
 						<div class="row btn-group">
 							<p><button id="blur_filter" class="btn btn-primary btn-block">Blur</button></p>
 							<p><button id="gaussianBlur_filter" class="btn btn-primary btn-block">Gaussian Blur</button></p>
@@ -116,24 +99,6 @@
 					</div>
 					<div id="tools_crop" class="hidden">
 						<div class="row"><h4>Crop</h4></div>
-						<div class="row"><h5>Box start</h5></div>
-						<div class="row">
-							<table class="table table-bordered">
-								<tr>
-									<td><input id="crop_x" value="0" type="number" class="form-control"/></td>
-									<td><input id="crop_y" value="0" type="number" class="form-control"/></td>
-								</tr>
-							</table>
-						</div>
-						<div class="row"><h5>Box size</h5></div>
-						<div class="row">
-							<table class="table table-bordered">
-								<tr>
-									<td><input id="crop_dx" value="0" type="number" class="form-control"/></td>
-									<td><input id="crop_dy" value="0" type="number" class="form-control"/></td>
-								</tr>
-							</table>
-						</div>
 						<p><button id="crop_btn" class="btn btn-primary btn-block">Apply</button></p>
 					</div>
 					<div id="tools_addImages" class="hidden">
@@ -167,6 +132,7 @@
 				</div>
 				<div class="col-md-1"></div>
 				<div id="image_div" class="col-md-8">
+					<div class="row hidden"><img id="initial" src="Images/vintage_add_image.png"></img></div>
 					<div class="row"><h3>Input image</h3></div>
 					<div class="row">
 						<canvas id="initial_canvas" class="img-rounded" width="800px" height="500px" style="border:1px solid #000000;"></canvas>

@@ -3,6 +3,25 @@ $(function() {
 	var width = $('#initial_canvas').width();
 	var height = $('#initial_canvas').height();
 
+	var selectArea = [0,0,width,height];
+
+	var getPixel = function(pos,data){
+		
+		var pixel = [];
+		for(var i=3; i>=0; i--){
+			pixel.push(data[pos+i]);
+		}
+		return pixel;
+	};
+
+	var putPixel = function(pos,pixel,data){
+		for(var i=0; i<3; i++){
+			data[pos+i] = pixel[i];
+		}
+
+		return data;
+	}
+
 	function loadImage(inputOrigin,e){
 
 		var file = e.target.files[0],
@@ -23,10 +42,6 @@ $(function() {
 			});
 		};
 		reader.readAsDataURL(file);
-	}
-
-	var loadImageFromFile = function(fileName){
-		
 	}
 
 	$('#input_file').change(function(e) {
@@ -95,9 +110,11 @@ $(function() {
 
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
+		result_canvas.clearRect(0,0,width,height);
 
-    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
-    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+    	var totalImageData = initial_canvas.getImageData(0,0,width,height);
+    	var initialImageData = initial_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
+    	var finalImageData = result_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
 
 		for (var i = 0; i < finalImageData.data.length; i+=4) {
 			finalImageData.data[i] = 255 - initialImageData.data[i];
@@ -106,16 +123,19 @@ $(function() {
 			finalImageData.data[i+3] = 255;
 		};
 
-		result_canvas.putImageData(finalImageData,0,0);
+		result_canvas.putImageData(totalImageData,0,0);
+		result_canvas.putImageData(finalImageData,selectArea[0],selectArea[1]);
 
 	};
 
 	var blackNwhite = function() {
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
+		result_canvas.clearRect(0,0,width,height);
 
-    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
-    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+    	var totalImageData = initial_canvas.getImageData(0,0,width,height);
+    	var initialImageData = initial_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
+    	var finalImageData = result_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
 
 		for (var i = 0; i < finalImageData.data.length; i+=4) {
 			//RED=30%, GREEN=59% and BLUE=11%
@@ -126,15 +146,18 @@ $(function() {
 			finalImageData.data[i+3] = 255;
 		};
 
-		result_canvas.putImageData(finalImageData,0,0);
+		result_canvas.putImageData(totalImageData,0,0);
+		result_canvas.putImageData(finalImageData,selectArea[0],selectArea[1]);
 	};
 
 	var sepia = function() {
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
+		result_canvas.clearRect(0,0,width,height);
 
-    	var initialImageData = initial_canvas.getImageData(0,0,width,height);
-    	var finalImageData = result_canvas.getImageData(0,0,width,height);
+    	var totalImageData = initial_canvas.getImageData(0,0,width,height);
+    	var initialImageData = initial_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
+    	var finalImageData = result_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
 
 		for (var i = 0; i < finalImageData.data.length; i+=4) {
 			// Red = (r * .393) + (g *.769) + (b * .189)
@@ -150,7 +173,8 @@ $(function() {
 			finalImageData.data[i+3] = 255;
 		};
 
-		result_canvas.putImageData(finalImageData,0,0);
+		result_canvas.putImageData(totalImageData,0,0);
+		result_canvas.putImageData(finalImageData,selectArea[0],selectArea[1]);
 	};
 
 	var addImage = function() {
@@ -229,14 +253,18 @@ $(function() {
 		if(denominator == 0) denominator = 1;
 
 		var initialImageData = initial_canvas.getImageData(0,0,width,height);
+
+		result_canvas.putImageData(initialImageData,0,0);
+		result_canvas.clearRect(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
+		
 		var finalImageData = result_canvas.getImageData(0,0,width,height);
 
         var halfLineSize = (lineSize/2)|0;
         var temp1 = 0;
         var temp2 = 0;
 
-		for(var l=0; l<height; l++) {
-			for(var c=0; c<width; c++) {
+		for(var l=selectArea[1]; l<selectArea[3]; l++) {
+			for(var c=selectArea[0]; c<selectArea[2]; c++) {
                 
 				finalImageData.data[4*(c+(l*width))+3] = 255;
 
@@ -377,14 +405,7 @@ $(function() {
 		result_canvas.putImageData(finalImageData,0,0);
 	};
 
-	var getPixel = function(pos,data){
-		
-		var pixel = [];
-		for(var i=3; i>=0; i--){
-			pixel.push(data[pos+i]);
-		}
-		return pixel;
-	};
+	
 
 	/*var bilinearInterpolation = function(newWidth,newHeight){
 
@@ -452,24 +473,29 @@ $(function() {
 		
 		result_canvas.putImageData(finalImageData,0,0);
 	};*/
-	
-	$("selector").change(function(e){
-		
-	});
 
-	var getCropBox = function(){
+	var getSelectionBox = function(img,selection){
 
-		var ret = [0,0,width,height];
-		var temp = parseInt( $('#crop_x').val() );
-		if(temp > ret[0]) ret[0] = temp;
-		temp = parseInt( $('#crop_y').val() );
-		if(temp > ret[1]) ret[1] = temp;
-		temp = parseInt( $('#crop_dx').val() );
-		if(temp < ret[2]) ret[2] = temp;
-		temp = parseInt( $('#crop_dy').val() );
-		if(temp < ret[3]) ret[3] = temp;
-		return ret;
+		console.log('width: ' + selection.width + '; height: ' + selection.height);
+		selectArea[0] = selection.x1;
+		selectArea[1] = selection.y1;
+		selectArea[2] = selection.width;
+		selectArea[3] = selection.height;
+
+		if( selectArea[2] == 0 || selectArea[3] == 0 ) selectArea = [0,0,width,height];
+
+		console.log("select area: "+selectArea);
 	};
+
+	$('#initial_canvas').imgAreaSelect({
+        handles: true,
+        onSelectEnd: getSelectionBox
+    });
+
+	$('#initial_canvas2').imgAreaSelect({
+        handles: true,
+        onSelectEnd: getSelectionBox
+    });
 
 	$('#blur_filter').on('click',function(e){
 		var size = parseInt($('#convolutionSize').val());
@@ -564,10 +590,9 @@ $(function() {
 	});
 
 	$('#crop_btn').on('click',function(e){
-		var crop_box = getCropBox();
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
 		result_canvas.clearRect(0,0,width,height);
-		crop(crop_box[0],crop_box[1],crop_box[2],crop_box[3]);
+		crop(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
 	});
 
 	$('#sobel_filter').on('click',function(e){
