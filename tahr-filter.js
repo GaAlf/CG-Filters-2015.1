@@ -306,7 +306,7 @@ $(function() {
 
 	};
 
-	var boxFiltering2Kernels = function(kernel1, kernel2) {
+	var boxFiltering2Kernels = function(kernel1, kernel2,lineSize) {
 
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
@@ -323,6 +323,10 @@ $(function() {
 		var initialImageData = initial_canvas.getImageData(0,0,width,height);
 		var finalImageData = result_canvas.getImageData(0,0,width,height);
 
+		var halfLineSize = (lineSize/2)|0;
+        var temp1 = 0;
+        var temp2 = 0;
+
 		for(var l=1; l<height-1; l++) {
 			for(var c=1; c<width-1; c++) {
 		
@@ -330,14 +334,22 @@ $(function() {
 
 				var red1 = 0, green1 = 0, blue1 = 0;
 				var red2 = 0, green2 = 0, blue2 = 0;
+                var partialWeight = 0;
 				for (var k=0; k<kernel1.length; k++) {
 					var x = c, y = l;
 
-					if(k/3 == 0) y++;
-					else if(k/3 == 2) y--;
+					temp1 = (k/lineSize)|0; 
+					if(temp1 < halfLineSize) y -= halfLineSize - temp1;
+					else if(temp1 > halfLineSize) y += temp1 - halfLineSize;
 
-					if(k%3 == 0) x--;
-					else if(k%3 == 2) x++;
+                    temp2 = k%lineSize;
+					if(temp2 < halfLineSize) x -= halfLineSize - temp2;
+					else if(temp2 > halfLineSize) x += temp2 - halfLineSize;
+
+                    if(x < 0 || x >= width || y < 0 || y >= height ){
+                        partialWeight += kernel[k];   
+                        continue;
+                    }
 
 					var r = initialImageData.data[4*(x+(y*width))];
 					var g = initialImageData.data[4*(x+(y*width))+1];
@@ -598,7 +610,7 @@ $(function() {
 	$('#sobel_filter').on('click',function(e){
 		gx = [-1,0,1,-2,0,2,-1,0,1];
 		gy = [1,2,1,0,0,0,-1,-2,-1];
-		boxFiltering2Kernels(gx,gy);
+		boxFiltering2Kernels(gx,gy,3);
 	});
 
 	$('#addImages_btn').on('click',function(e){
