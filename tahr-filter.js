@@ -1,7 +1,7 @@
 $(function() {
 
-	var width = $('#result_canvas').width();
-	var height = $('#result_canvas').height();
+	var width = $('#initial_canvas').width();
+	var height = $('#initial_canvas').height();
 
 	var selectArea = [0,0,width,height];
 
@@ -22,6 +22,26 @@ $(function() {
 		return data;
 	}
 
+	var setDeafaultResultCanvas = function(){
+		
+		width = $('#initial_canvas').width();
+		height = $('#initial_canvas').height();
+
+		$("#result_canvas").attr("height",height+"");
+		$("#result_canvas").attr("width",width+"");
+
+		$("#initial_canvas2").attr("height","100");
+		$("#initial_canvas2").attr("width","100");
+
+		var initial_canvas2 = $('#initial_canvas2')[0].getContext('2d');
+		initial_canvas2.clearRect(0,0,width,height);
+
+		var result_canvas = $('#result_canvas')[0].getContext('2d');
+		result_canvas.clearRect(0,0,width,height);
+
+		selectArea = [0,0,width,height];
+	}
+
 	function loadImage(inputOrigin,e){
 
 		var file = e.target.files[0],
@@ -37,6 +57,8 @@ $(function() {
 			$img.load(function() {
 				$(inputOrigin).attr("width",this.width+"");
 				$(inputOrigin).attr("height",this.height+"");
+				selectArea[0] = 0;
+				selectArea[1] = 0;
 
 				if(height < this.height){
 					height = this.height;
@@ -94,7 +116,8 @@ $(function() {
 		hidden_tools();
 		show_secondInput();
 		hidden_secondInput();
-		
+		setDeafaultResultCanvas();
+
 		switch(tool){
 			case "filters":
 				$("#tools_filters").removeClass();
@@ -245,6 +268,9 @@ $(function() {
 	};
 
 	var crop = function(x,y,dx,dy) {
+
+		$("#result_canvas").attr("height",dy+"");
+		$("#result_canvas").attr("width",dx+"");
 
 		var initial_canvas = $('#initial_canvas')[0].getContext('2d');
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
