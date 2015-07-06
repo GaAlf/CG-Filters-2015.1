@@ -1,7 +1,7 @@
 $(function() {
 
-	var width = $('#initial_canvas').width();
-	var height = $('#initial_canvas').height();
+	var width = $('#result_canvas').width();
+	var height = $('#result_canvas').height();
 
 	var selectArea = [0,0,width,height];
 
@@ -33,11 +33,28 @@ $(function() {
 		var reader = new FileReader();
 		reader.onload = function(e){
 			var $img = $('<img>', { src: e.target.result});
-			var canvas = $(inputOrigin)[0];
-			var context = canvas.getContext('2d');
-			context.clearRect(0,0,width,height);
 
 			$img.load(function() {
+				$(inputOrigin).attr("width",this.width+"");
+				$(inputOrigin).attr("height",this.height+"");
+
+				if(height < this.height){
+					height = this.height;
+					selectArea[3] = height;
+					$("#result_canvas").attr("height",this.height+"");
+				}
+
+				if(width < this.width){
+					width = this.width;
+					selectArea[2] = width;
+					$("#result_canvas").attr("width",this.width+"");
+				}
+
+				height = this.height;
+				var canvas = $(inputOrigin)[0];
+				
+				var context = canvas.getContext('2d');
+				context.clearRect(0,0,width,height);
 				context.drawImage(this, 0, 0);
 			});
 		};
@@ -112,9 +129,9 @@ $(function() {
 		var result_canvas = $('#result_canvas')[0].getContext('2d');
 		result_canvas.clearRect(0,0,width,height);
 
-    	var totalImageData = initial_canvas.getImageData(0,0,width,height);
-    	var initialImageData = initial_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
-    	var finalImageData = result_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
+		var totalImageData = initial_canvas.getImageData(0,0,width,height);
+		var initialImageData = initial_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
+		var finalImageData = result_canvas.getImageData(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
 
 		for (var i = 0; i < finalImageData.data.length; i+=4) {
 			finalImageData.data[i] = 255 - initialImageData.data[i];
@@ -263,8 +280,12 @@ $(function() {
         var temp1 = 0;
         var temp2 = 0;
 
-		for(var l=selectArea[1]; l<selectArea[3]; l++) {
-			for(var c=selectArea[0]; c<selectArea[2]; c++) {
+		var endPoint = [0,0];
+		endPoint[0] = selectArea[3] + selectArea[1];
+		endPoint[1] = selectArea[2] + selectArea[0];
+
+		for(var l=selectArea[1]; l<endPoint[0]; l++) {
+			for(var c=selectArea[0]; c<endPoint[1]; c++) {
                 
 				finalImageData.data[4*(c+(l*width))+3] = 255;
 
@@ -321,14 +342,22 @@ $(function() {
 		if(denominator2 == 0) denominator2 = 1;
 
 		var initialImageData = initial_canvas.getImageData(0,0,width,height);
+
+		result_canvas.putImageData(initialImageData,0,0);
+		result_canvas.clearRect(selectArea[0],selectArea[1],selectArea[2],selectArea[3]);
+
 		var finalImageData = result_canvas.getImageData(0,0,width,height);
 
 		var halfLineSize = (lineSize/2)|0;
         var temp1 = 0;
         var temp2 = 0;
 
-		for(var l=1; l<height-1; l++) {
-			for(var c=1; c<width-1; c++) {
+		var endPoint = [0,0];
+		endPoint[0] = selectArea[3] + selectArea[1];
+		endPoint[1] = selectArea[2] + selectArea[0];
+
+		for(var l=selectArea[1]; l<endPoint[0]; l++) {
+			for(var c=selectArea[0]; c<endPoint[1]; c++) {
 		
 				finalImageData.data[4*(c+(l*width))+3] = 255;
 
@@ -490,15 +519,12 @@ $(function() {
 
 	var getSelectionBox = function(img,selection){
 
-		console.log('width: ' + selection.width + '; height: ' + selection.height);
 		selectArea[0] = selection.x1;
 		selectArea[1] = selection.y1;
 		selectArea[2] = selection.width;
 		selectArea[3] = selection.height;
 
 		if( selectArea[2] == 0 || selectArea[3] == 0 ) selectArea = [0,0,width,height];
-
-		console.log("select area: "+selectArea);
 	};
 
 	$('#initial_canvas').imgAreaSelect({
